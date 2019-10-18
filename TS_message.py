@@ -133,7 +133,7 @@ class TS_message (PyTango.Device_4Impl):
                 result = messagebox.askyesno("Python","Would you like to save the data?")
                 print result                
                 self.check_retract=False
-                time.sleep(1)
+            time.sleep(0.1)
     #----- PROTECTED REGION END -----#	//	TS_message.programmer_methods
 
 class TS_messageClass(PyTango.DeviceClass):
