@@ -44,6 +44,10 @@ __docformat__ = 'restructuredtext'
 
 import PyTango
 import sys
+import tkinter
+from tkinter import messagebox
+import time
+import threading
 # Add additional import
 #----- PROTECTED REGION ID(TS_message.additionnal_import) ENABLED START -----#
 
@@ -66,7 +70,12 @@ class TS_message (PyTango.Device_4Impl):
         self.debug_stream("In __init__()")
         TS_message.init_device(self)
         #----- PROTECTED REGION ID(TS_message.__init__) ENABLED START -----#
+        self.check_retract=False        
         
+        if not 'pingthread' in dir(self):
+            self.pingthread = threading.Thread(target=self.Retract)
+            self.pingthread.setDaemon(True)
+            self.pingthread.start()
         #----- PROTECTED REGION END -----#	//	TS_message.__init__
         
     def delete_device(self):
@@ -96,7 +105,7 @@ class TS_message (PyTango.Device_4Impl):
         self.debug_stream("In write_Message()")
         data = attr.get_write_value()
         #----- PROTECTED REGION ID(TS_message.Message_write) ENABLED START -----#
-        
+        self.check_retract=True
         #----- PROTECTED REGION END -----#	//	TS_message.Message_write
         
     
@@ -115,7 +124,15 @@ class TS_message (PyTango.Device_4Impl):
     
 
     #----- PROTECTED REGION ID(TS_message.programmer_methods) ENABLED START -----#
-    
+    def Retract(self):
+        while True:
+            if self.check_retract==True:
+                root = tkinter.Tk()
+                root.withdraw()
+                result = messagebox.askyesno("Python","Would you like to save the data?")
+                print result                
+                self.check_retract=False
+                time.sleep(1)
     #----- PROTECTED REGION END -----#	//	TS_message.programmer_methods
 
 class TS_messageClass(PyTango.DeviceClass):
