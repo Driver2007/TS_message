@@ -105,7 +105,8 @@ class TS_message (PyTango.Device_4Impl):
         self.debug_stream("In write_Message()")
         data = attr.get_write_value()
         #----- PROTECTED REGION ID(TS_message.Message_write) ENABLED START -----#
-        self.check_retract=True
+        if self.check_retract==False:
+            self.check_retract=True
         #----- PROTECTED REGION END -----#	//	TS_message.Message_write
         
     
